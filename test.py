@@ -1,8 +1,8 @@
 import csv
 from pprint import pprint
-from scipy.stats import f
+from scipy.stats import f, studentized_range
 from tabulate import tabulate
-
+import numpy as np
 
 
 def fisher(oxidoNitroso, humedad, temperatura, presion, t):
@@ -23,7 +23,7 @@ def fisher(oxidoNitroso, humedad, temperatura, presion, t):
     Xi2 = sum([x**2 for x in oxidoNitroso]) + sum([x**2 for x in humedad]) +sum([x**2 for x in temperatura]) + sum([x**2 for x in presion])
     Xi2_2 = (sum(oxidoNitroso)**2) + (sum(humedad)**2) + (sum(temperatura)**2) + (sum(presion)**2)
     Nt = len(oxidoNitroso) + len(humedad) + len(temperatura) + len(presion)
-    Xi2N = Xi2_2 / Nt
+    Xi2N = (sum(oxidoNitroso)**2 / len(oxidoNitroso)) + (sum(humedad)**2 / len(humedad)) + (sum(temperatura)**2 / len(temperatura)) + (sum(presion)**2 / len(presion))
     sumMean = sum(oxidoNitroso) / len(oxidoNitroso) + sum(humedad) / len(humedad) + sum(temperatura) / len(temperatura) + sum(presion) / len(presion)
     
     #Variables previas a la tabla de calc
@@ -74,7 +74,7 @@ def fisher(oxidoNitroso, humedad, temperatura, presion, t):
     print("\--Calculos para FCalc--/")
     dataFCalc = [
             ["Tratamiento", f"SCTR: {round(SCTR, 2)}", f"t-1: {Gl_Tratamiento}", f"MCTR: {round(MCTR, 2)}", "MCTR / MCE"],
-            ["Error", f"SCE: {round(SCE, 2)}", f"n-t: {Gl_Error}", f"MCTR: {round(MCE, 2)}", f"FCalc: {round(FCalc, 2)}"],
+            ["Error", f"SCE: {round(SCE, 2)}", f"n-t: {Gl_Error}", f"MCE: {round(MCE, 2)}", f"FCalc: {round(FCalc, 2)}"],
             ["Total", f"SCT: {round(SCT, 2)}", f"n-1: {Gl_Tratamiento + Gl_Error}"],
         ]
 
@@ -86,6 +86,19 @@ def fisher(oxidoNitroso, humedad, temperatura, presion, t):
     else:
         print("Rechazamos la Hipotesis Ho y Aceptamos la Hipotesis Ha")
         
+    print("============================================================\n")
+    print("\--Calculos con el DHS--/")
+    #DHS = f.
+    #print(f"DHS: {DHS}")
+    means = [np.mean(oxidoNitroso), np.mean(humedad), np.mean(temperatura), np.mean(presion)]
+    tableTukey = [
+        [" ///// ", round(means[0] - means[1], 2), round(means[0] - means[2], 2), round(means[0] - means[3], 2)],
+        [" ///// ", " ///// ", round(means[1] - means[2], 2), round(means[1] - means[3], 2)],
+        [" ///// ", " ///// ", " ///// ", round(means[2] - means[3], 2)],
+        [" ///// ", " ///// ", " ///// ", " ///// "]
+    ]
+        
+    print(tabulate(tableTukey, headers=["x̅1", 'x̅2', "x̅3", "x̅4"], tablefmt='grid', colalign=("left")))
 
     # with open("test.txt", "w") as fileToCreate:
     #     fileToCreate.write(f"""Xi: {Xi}
@@ -99,6 +112,7 @@ def fisher(oxidoNitroso, humedad, temperatura, presion, t):
 
 
 if __name__ == "__main__":
+
     oxidoNitroso = []
     humedad = []
     temperatura = []
@@ -110,6 +124,3 @@ if __name__ == "__main__":
            presion.append(float(x["Presion(x3)"]))] for x in list(csv.DictReader(dataBase, delimiter=";"))]
          
     fisher(oxidoNitroso, humedad, temperatura, presion, 4)
-
-
-    
