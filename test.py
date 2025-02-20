@@ -91,12 +91,25 @@ def fisher(oxidoNitroso, humedad, temperatura, presion, t):
     #DHS = f.
     #print(f"DHS: {DHS}")
     means = [np.mean(oxidoNitroso), np.mean(humedad), np.mean(temperatura), np.mean(presion)]
-    tableTukey = [
-        [" ///// ", round(means[0] - means[1], 2), round(means[0] - means[2], 2), round(means[0] - means[3], 2)],
-        [" ///// ", " ///// ", round(means[1] - means[2], 2), round(means[1] - means[3], 2)],
-        [" ///// ", " ///// ", " ///// ", round(means[2] - means[3], 2)],
-        [" ///// ", " ///// ", " ///// ", " ///// "]
-    ]
+    #dataExample = " ///// "
+    tableTukey = []
+
+    for i, x in enumerate(means):
+        data = []
+        test = i
+        [data.append(" ///// ") for x in range(i+1)]
+        while(test < len(means) - 1):
+            data.append(round(means[i] - means[test+1], 2))
+            test += 1
+        tableTukey.append(data)
+        
+
+    # tableTukey = [
+    #     [" ///// ", round(means[0] - means[1], 2), round(means[0] - means[2], 2), round(means[0] - means[3], 2)],
+    #     [" ///// ", " ///// ", round(means[1] - means[2], 2), round(means[1] - means[3], 2)],
+    #     [" ///// ", " ///// ", " ///// ", round(means[2] - means[3], 2)],
+    #     [" ///// ", " ///// ", " ///// ", " ///// "]
+    # ]
         
     print(tabulate(tableTukey, headers=["x̅1", 'x̅2', "x̅3", "x̅4"], tablefmt='grid', colalign=("left")))
 
