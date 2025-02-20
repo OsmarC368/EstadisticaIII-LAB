@@ -127,6 +127,10 @@ def fisher(oxidoNitroso, humedad, temperatura, presion, t):
     
     [linealRegression(x) for x in dataToDo]
 
+    multipleRegression([["Humedad", humedad], ["Temperatura", temperatura], ["Presion", presion]])
+
+
+#===============================================================================
 def linealRegression(variables):
     print(f"\--Correlación Lineal entre {variables[0][0]} y {variables[1][0]}--/\n")
     n = len(variables[0][1])
@@ -161,14 +165,15 @@ def linealRegression(variables):
 
     #randomX = np.random.normal(50.0, 1.0, 50)
     randomX = np.random.randint(1000000000, size=(20))
-    print(randomX)
+    #print(randomX)
     
     if  input("Desear Ver el Grafico? (1)Si\n") == "1":
         xRange = range(-500, 2000)
-        pyplot.plot(xRange, [y(i) for i in xRange])
-        pyplot.axhline(0, color="red")
-        pyplot.axvline(0, color="green")
-        pyplot.scatter(randomX, [y(i) for i in randomX])
+        #pyplot.plot(xRange, [y(i) for i in xRange])
+        #pyplot.axhline(0, color="red")
+        #pyplot.axvline(0, color="green")
+        #pyplot.scatter(randomX, [y(i) for i in randomX])
+        pyplot.scatter(variables[0][1], variables[1][1])
         #pyplot.xlim(-10, 10)
         #pyplot.ylim(-10, 10)
         pyplot.show()
@@ -194,6 +199,49 @@ def correlation(r):
         return "Fuerte Correlación Indirecta"
     elif r == -1:
         return "Correlacion Perfecta Indirecta"
+    
+def multipleRegression(variables):
+    print(f"\--Regresion Multiple entre {variables[0][0]}, {variables[1][0]} y {variables[2][0]}--/\n")
+
+    n = len(variables[0][1])
+
+    sumY = sum(variables[0][1])
+    sumX1 = sum(variables[1][1])
+    sumX2 = sum(variables[2][1])
+
+    sumX1Sq = sum([x**2 for x in variables[1][1]])
+
+    sumX1X2 = sum([variables[1][1][i] ** variables[2][1][i] for i, _ in enumerate(variables[0][1])])
+
+    sumX1Y = sum([variables[0][1][i] ** variables[1][1][i] for i, _ in enumerate(variables[0][1])])
+
+    sumX2Sq = sum([x**2 for x in variables[2][1]])
+
+    sumX2Y = sum([variables[0][1][i] ** variables[2][1][i] for i, _ in enumerate(variables[0][1])])
+
+    #varsToMatrix =[n, sumX1, sumX2, sumY]
+    matrix = [
+        [n, sumX1, sumX2, sumY],
+        [sumX1, sumX1Sq, sumX1X2, sumX1Y],
+        [sumX2, sumX1X2, sumX2Sq, sumX2Y]
+    ]
+
+    print(tabulate(matrix))
+
+    for index, i in enumerate(matrix):
+        for x in matrix[index]:
+            if x != 1:
+                matrix[index] = [(1/x) * value for value in matrix[index]]
+
+    # for i in range(len(matrix)):
+    #     if matrix[i][i] != 1:
+    #         matrix[i] = [(1/matrix[i][i]) * x for x in matrix[i]]
+
+    # for i in range(len(variables)):
+    #     for x in range(i+1):
+    #         matrix.append([varsToMatrix[x]])
+        
+
 
 if __name__ == "__main__":
 
