@@ -3,6 +3,7 @@ from pprint import pprint
 from scipy.stats import f, studentized_range
 from tabulate import tabulate
 import numpy as np
+from matplotlib import pyplot
 
 
 def fisher(oxidoNitroso, humedad, temperatura, presion, t):
@@ -88,41 +89,111 @@ def fisher(oxidoNitroso, humedad, temperatura, presion, t):
         
     print("============================================================\n")
     print("\--Calculos con el DHS--/")
-    #DHS = f.
-    #print(f"DHS: {DHS}")
+    
     means = [np.mean(oxidoNitroso), np.mean(humedad), np.mean(temperatura), np.mean(presion)]
-    #dataExample = " ///// "
     tableTukey = []
-
+    coupleMeans = {}
     for i, x in enumerate(means):
         data = []
         test = i
         [data.append(" ///// ") for x in range(i+1)]
         while(test < len(means) - 1):
             data.append(round(means[i] - means[test+1], 2))
+            coupleMeans.update({f"x{i+1}x{test+2}": means[i] - means[test+1]})
             test += 1
         tableTukey.append(data)
-        
 
-    # tableTukey = [
-    #     [" ///// ", round(means[0] - means[1], 2), round(means[0] - means[2], 2), round(means[0] - means[3], 2)],
-    #     [" ///// ", " ///// ", round(means[1] - means[2], 2), round(means[1] - means[3], 2)],
-    #     [" ///// ", " ///// ", " ///// ", round(means[2] - means[3], 2)],
-    #     [" ///// ", " ///// ", " ///// ", " ///// "]
-    # ]
-        
     print(tabulate(tableTukey, headers=["x̅1", 'x̅2', "x̅3", "x̅4"], tablefmt='grid', colalign=("left")))
 
-    # with open("test.txt", "w") as fileToCreate:
-    #     fileToCreate.write(f"""Xi: {Xi}
-    #                         Xi^2: {Xi2}
-    #                         (Xi)2: {Xi2_2}
-    #                         n: {Nt}
-    #                         xi2/n: {Xi2N}
-    #                         Mean X: {sumMean}
-    #                         """)
-    #print(f"Ftab: {fTab}")
+    ni = Nt / t
+    q = studentized_range.ppf(q=0.95, k=Gl_Tratamiento + 1, df=Gl_Error)
+    DHS = round(q * (MCE / ni) ** 0.5, 4)
 
+    print(f"\nDHS: {DHS}\n")
+
+    for var in coupleMeans:
+        if coupleMeans[var] > DHS:
+            print(f"Debido a que {var} > DHS es linealmente Independiente")
+        else:
+            print(f"Debido a que {var} < DHS es linealmente Dependiente")
+        print("-----------------------------------------------------")
+    
+    print("============================================================\n")
+
+    x2x4 = [["Humedad", humedad], ["Presion", presion]]
+    x3x4 = [["Temperatura", temperatura], ["Presion", presion]]
+    
+    dataToDo = [x2x4, x3x4]
+    
+    [linealRegression(x) for x in dataToDo]
+
+def linealRegression(variables):
+    print(f"\--Correlación Lineal entre {variables[0][0]} y {variables[1][0]}--/\n")
+    n = len(variables[0][1])
+    
+    sumX = sum(variables[0][1])
+    sumY = sum(variables[1][1])
+    
+    sumX2 = sum([x**2 for x in variables[0][1]])    
+    sumY2 = sum([x**2 for x in variables[1][1]])
+    
+    sumXY = sum([variables[0][1][i] * variables[1][1][i] for i, _ in enumerate(variables[0][1])])
+    
+    tabulateData = [
+        ["n",round(n, 4)],
+        ["∑X", round(sumX, 4)],
+        ["∑X²", round(sumX2, 4)],
+        ["∑Y", round(sumY, 4)],
+        ["∑Y²", round(sumY2, 4)],
+        ["∑X.Y", round(sumXY, 4)]
+    ]
+
+    print("\-Datos para la Correlación-/")
+    print(tabulate(tabulateData, tablefmt='grid'))
+
+    r = (sumXY - (sumX * sumY / n)) / np.sqrt((sumX2 - ((sumX**2) / n)) * (sumY2 - ((sumY**2) / n)))
+    print(f"\nel resultado de r es {r} lo que quiere decir que:\n{correlation(r)}\n")
+    
+    b = ((sumX * sumY) - (n * sumX * sumY)) / ((sumX**2) - n * sumX2)
+    a = (sumY - (sumX*b)) / (n)
+    
+    y = lambda x: a + b * x
+
+    #randomX = np.random.normal(50.0, 1.0, 50)
+    randomX = np.random.randint(1000000000, size=(20))
+    print(randomX)
+    
+    if  input("Desear Ver el Grafico? (1)Si\n") == "1":
+        xRange = range(-500, 2000)
+        pyplot.plot(xRange, [y(i) for i in xRange])
+        pyplot.axhline(0, color="red")
+        pyplot.axvline(0, color="green")
+        pyplot.scatter(randomX, [y(i) for i in randomX])
+        #pyplot.xlim(-10, 10)
+        #pyplot.ylim(-10, 10)
+        pyplot.show()
+    print("============================================================\n")
+
+
+def correlation(r):
+    if r == 0:
+        return "Sin Relación"
+    elif 0 < r < 0.25:
+        return "Debíl Correlación Directa"
+    elif 0.25 <= r < 0.75:
+        return "Intermedia Correlación Directa"
+    elif 0.75 <= r < 1:
+        return "Fuerte Correlación Directa"
+    elif r == 1:
+        return "Perfecta Correlación Directa"
+    elif -0.25 < r < 0:
+        return "Debíl Correlación Indirecta"
+    elif -0.75 < r <= -0.25:
+        return "Intermedia Correlación Indirecta"
+    elif -1 < r <= -0.75:
+        return "Fuerte Correlación Indirecta"
+    elif r == -1:
+        return "Correlacion Perfecta Indirecta"
 
 if __name__ == "__main__":
 
