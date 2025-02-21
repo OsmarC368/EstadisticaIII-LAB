@@ -211,13 +211,16 @@ def multipleRegression(variables):
 
     sumX1Sq = sum([x**2 for x in variables[1][1]])
 
-    sumX1X2 = sum([variables[1][1][i] ** variables[2][1][i] for i, _ in enumerate(variables[0][1])])
+    #sumX1X2 = sum([variables[1][1][i] ** variables[2][1][i] for i in range(len(variables[0][1]))])
+    sumX1X2 = sum([x * y for x, y in zip(variables[1][1], variables[2][1])])
 
-    sumX1Y = sum([variables[0][1][i] ** variables[1][1][i] for i, _ in enumerate(variables[0][1])])
+    #sumX1Y = sum([variables[0][1][i] ** variables[1][1][i] for i, _ in enumerate(variables[0][1])])
+    sumX1Y = sum([x * y for x, y in zip(variables[1][1], variables[0][1])])
 
     sumX2Sq = sum([x**2 for x in variables[2][1]])
 
-    sumX2Y = sum([variables[0][1][i] ** variables[2][1][i] for i, _ in enumerate(variables[0][1])])
+    #sumX2Y = sum([variables[0][1][i] ** variables[2][1][i] for i, _ in enumerate(variables[0][1])])
+    sumX2Y = sum([x * y for x, y in zip(variables[2][1], variables[0][1])])
 
     #varsToMatrix =[n, sumX1, sumX2, sumY]
     matrix = [
@@ -245,10 +248,10 @@ def gaussJordan(matrix):
         for j in range(len(matrix)):
             if j == i: continue
             negValue = -matrix[j][i]
-            matrix[j] = [y + (x * negValue) for x, y in zip(matrix[j], matrix[i])]
+            matrix[j] = [y + negValue * x for x, y in zip(matrix[i], matrix[j])]
     
     
-    pprint(matrix)
+    print(tabulate(matrix))
             
 
 
