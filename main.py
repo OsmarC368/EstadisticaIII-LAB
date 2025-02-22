@@ -70,7 +70,7 @@ def fisher(data, t, tableToPrint):
     print("\--Calculos para FCalc--/")
     dataFCalc = [
             ["Tratamiento", f"SCTR: {round(SCTR, 4)}", f"t-1: {Gl_Tratamiento}", f"MCTR: {round(MCTR, 4)}", "MCTR / MCE"],
-            ["Error", f"SCE: {round(SCE, 4)}", f"n-t: {Gl_Error}", f"MCE: {round(MCE, 2)}", f"FCalc: {round(FCalc, 4)}"],
+            ["Error", f"SCE: {round(SCE, 4)}", f"n-t: {Gl_Error}", f"MCE: {round(MCE, 4)}", f"FCalc: {round(FCalc, 4)}"],
             ["Total", f"SCT: {round(SCT, 4)}", f"n-1: {Gl_Tratamiento + Gl_Error}"],
         ]
 
