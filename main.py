@@ -74,7 +74,7 @@ def fisher(data, t, tableToPrint):
             ["Total", f"SCT: {round(SCT, 4)}", f"n-1: {Gl_Tratamiento + Gl_Error}"],
         ]
 
-    print(tabulate(dataFCalc, headers=["Fuente de Variacion", 'SC', "gl", "F(rv)"], tablefmt='grid', colalign=("left")))
+    print(tabulate(dataFCalc, headers=["Fuente de Variacion", 'SC', "gl", "F(rv)", "FCalc"], tablefmt='grid', colalign=("left")))
     print("============================================================\n")
 
     print(f"FTab = {round(FTab, 4)} y FCalc = {round(FCalc, 4)}")
