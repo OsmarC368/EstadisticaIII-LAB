@@ -259,6 +259,23 @@ def multipleRegression(variables):
     sumX2Y = sum([x * y for x, y in zip(variables[2][1], variables[0][1])])
 
     #varsToMatrix =[n, sumX1, sumX2, sumY]
+    print("Calc Previos")
+    multRegToPrint = [
+        ["n", n],
+        ["sumY", sumY],
+        ["sumX1", sumX1],
+        ["sumX2", sumX2],
+        ["sumX1Sq", sumX1Sq],
+        ["sumX1X2", sumX1X2],
+        ["sumX1Y", sumX1Y],
+        ["sumX2Sq", sumX2Sq],
+        ["sumX2Y", sumX2Y]
+    ]
+
+    print("\n")
+    print(tabulate(multRegToPrint, tablefmt='grid'))
+    print("\n")
+
     matrix = [
         [n, sumX1, sumX2, sumY],
         [sumX1, sumX1Sq, sumX1X2, sumX1Y],
