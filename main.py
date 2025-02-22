@@ -70,13 +70,14 @@ def fisher(data, t, tableToPrint):
     print("\--Calculos para FCalc--/")
     dataFCalc = [
             ["Tratamiento", f"SCTR: {round(SCTR, 4)}", f"t-1: {Gl_Tratamiento}", f"MCTR: {round(MCTR, 4)}", "MCTR / MCE"],
-            ["Error", f"SCE: {round(SCE, 4)}", f"n-t: {Gl_Error}", f"MCE: {round(MCE, 2)}", f"FCalc: {round(FCalc, 4)}"],
+            ["Error", f"SCE: {round(SCE, 4)}", f"n-t: {Gl_Error}", f"MCE: {round(MCE, 4)}", f"FCalc: {round(FCalc, 4)}"],
             ["Total", f"SCT: {round(SCT, 4)}", f"n-1: {Gl_Tratamiento + Gl_Error}"],
         ]
 
-    print(tabulate(dataFCalc, headers=["Fuente de Variacion", 'SC', "gl", "F(rv)"], tablefmt='grid', colalign=("left")))
+    print(tabulate(dataFCalc, headers=["Fuente de Variacion", 'SC', "gl", "F(rv)", "FCalc"], tablefmt='grid', colalign=("left")))
     print("============================================================\n")
 
+    print(f"FTab = {round(FTab, 4)} y FCalc = {round(FCalc, 4)}")
     if(FCalc < FTab):
         print("Rechazamos la Hipotesis Ha y Aceptamos la Hipotesis Ho")
     else:
@@ -258,6 +259,23 @@ def multipleRegression(variables):
     sumX2Y = sum([x * y for x, y in zip(variables[2][1], variables[0][1])])
 
     #varsToMatrix =[n, sumX1, sumX2, sumY]
+    print("Calc Previos")
+    multRegToPrint = [
+        ["n", n],
+        ["sumY", sumY],
+        ["sumX1", sumX1],
+        ["sumX2", sumX2],
+        ["sumX1Sq", sumX1Sq],
+        ["sumX1X2", sumX1X2],
+        ["sumX1Y", sumX1Y],
+        ["sumX2Sq", sumX2Sq],
+        ["sumX2Y", sumX2Y]
+    ]
+
+    print("\n")
+    print(tabulate(multRegToPrint, tablefmt='grid'))
+    print("\n")
+
     matrix = [
         [n, sumX1, sumX2, sumY],
         [sumX1, sumX1Sq, sumX1X2, sumX1Y],
