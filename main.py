@@ -77,6 +77,7 @@ def fisher(data, t, tableToPrint):
     print(tabulate(dataFCalc, headers=["Fuente de Variacion", 'SC', "gl", "F(rv)"], tablefmt='grid', colalign=("left")))
     print("============================================================\n")
 
+    print(f"FTab = {round(FTab, 4)} y FCalc = {round(FCalc, 4)}")
     if(FCalc < FTab):
         print("Rechazamos la Hipotesis Ha y Aceptamos la Hipotesis Ho")
     else:
